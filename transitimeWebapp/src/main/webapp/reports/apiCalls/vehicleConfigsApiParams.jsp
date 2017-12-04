@@ -25,7 +25,7 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for Vehicle Configurations API
+   <fmt:message key="div.spfvca" />
 </div>
 
 <div id="mainDiv">

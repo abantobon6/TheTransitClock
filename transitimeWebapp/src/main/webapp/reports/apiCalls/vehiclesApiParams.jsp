@@ -30,7 +30,7 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for Vehicles API
+   <fmt:message key="div.spfva" />
 </div>
 
 <div id="mainDiv">

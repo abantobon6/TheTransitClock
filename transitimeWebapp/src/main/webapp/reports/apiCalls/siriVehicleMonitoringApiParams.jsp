@@ -30,7 +30,7 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for SIRI Vehicle Montitoring API
+   <fmt:message key="div.spfsvma" />
 </div>
 
 <div id="mainDiv">

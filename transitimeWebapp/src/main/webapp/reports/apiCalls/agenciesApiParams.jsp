@@ -26,7 +26,7 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for Agencies API
+   <fmt:message key="div.spfa" />
 </div>
 
 <div id="mainDiv">

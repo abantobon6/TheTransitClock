@@ -15,14 +15,15 @@ if (agencyId == null || agencyId.isEmpty()) {
   <%@include file="/template/includes.jsp" %>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
 <title><fmt:message key="div.historical" /></title>
 </head>
 <body>
 <%@include file="/template/header.jsp" %>
 <div id="mainDiv">
-<div id="title">Historical Reports for <%= WebAgency.getCachedWebAgency(agencyId).getAgencyName() %></div>
+<div id="title"><fmt:message key="div.hrf" /> <%= WebAgency.getCachedWebAgency(agencyId).getAgencyName() %></div>
 
-<div id="subtitle">Prediction Accuracy<br/><span style="font-size: small">(only for agencies where prediction accuracy stored to database)</span></div>
+<div id="subtitle"><fmt:message key="div.pa" /><br/><span style="font-size: small"><fmt:message key="div.ofa" /></span></div>
 <ul class="choicesList">
   <li><a href="predAccuracyRangeParams.jsp?a=<%= agencyId %>"
     title="Shows percentage of predictions that were accurate
@@ -43,7 +44,7 @@ finding specific issues with predictions.">
       <fmt:message key="div.csv" /></a></li>
 </ul>
 
-<div id="subtitle">Schedule Adherence Reports</div>
+<div id="subtitle"><fmt:message key="div.sar" /></div>
 <ul class="choicesList">
   <li><a href="schAdhByRouteParams.jsp?a=<%= agencyId %>"
     title="Displays historic schedule adherence data by route in a bar chart.
@@ -56,7 +57,7 @@ finding specific issues with predictions.">
       <fmt:message key="div.earlylate" /></a></li>
 </ul>
 
-<div id="subtitle">AVL Reports</div>
+<div id="subtitle"><fmt:message key="div.ar" /></div>
 <ul class="choicesList">
   <li><a href="avlMapByRouteParams.jsp?a=<%= agencyId %>"
     title="Displays historic AVL data for a route in a map.">
@@ -69,7 +70,7 @@ finding specific issues with predictions.">
       <fmt:message key="div.lastgps" /></a></li>
 </ul>
 
-<div id="subtitle">Miscellaneous Reports</div>
+<div id="subtitle"><fmt:message key="div.mr" /></div>
 <ul class="choicesList">
   <li><a href="scheduleHorizStopsParams.jsp?a=<%= agencyId %>"
     title="Displays in a table the schedule for a specified route.">
@@ -77,7 +78,7 @@ finding specific issues with predictions.">
   <li><a href="scheduleVertStopsParams.jsp?a=<%= agencyId %>"
     title="Displays in a table the schedule for a specified route. Stops listed
     vertically which is useful for when there are not that many trips per day.">
-      Schedule for Route (vertical stops)</a></li>
+      <fmt:message key="div.sfrvss" /></a></li>
 </ul>
 </div>
 </body>

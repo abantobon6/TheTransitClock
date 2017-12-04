@@ -1,11 +1,11 @@
 <%-- For creating a route selector parameter via a jsp include.
      User can select all routes (r param then set to " ") or any
-     number of routes. 
+     number of routes.
      Reads in routes via API for the agency specified by the "a" param. --%>
 
 <style type="text/css">
-/* Set font for route selector. Need to use #select2-drop because of 
- * extra elements that select2 adds 
+/* Set font for route selector. Need to use #select2-drop because of
+ * extra elements that select2 adds
  */
 #select2-drop, #routesDiv {
   font-family: sans-serif; font-size: large;
@@ -14,7 +14,7 @@
 
 <script>
 
-$.getJSON(apiUrlPrefix + "/command/routes", 
+$.getJSON(apiUrlPrefix + "/command/routes",
  		function(routes) {
 	        // Generate list of routes for the selector
 	        // For selector2 version 4.0 now can't set id to empty
@@ -26,11 +26,11 @@ $.getJSON(apiUrlPrefix + "/command/routes",
 	 			var route = routes.routes[i];
 	 			selectorData.push({id: route.id, text: route.name})
 	 		}
-	 		
+
 	 		// Configure the selector to be a select2 one that has
 	 		// search capability
  			$("#route").select2({
- 				placeholder: "All Routes", 				
+ 				placeholder: "All Routes",
  				data : selectorData})
  			// Need to reset tooltip after selector is used. Sheesh!
  			.on("select2:select", function(e) {
@@ -38,7 +38,7 @@ $.getJSON(apiUrlPrefix + "/command/routes",
  				$( "#select2-route-container" ).tooltip({ content: configuredTitle,
  						position: { my: "left+10 center", at: "right center" } });
  			});
-	 		
+
 	 		// Tooltips for a select2 widget are rather broken. So get
 	 		// the tooltip title attribute from the original route element
 	 		// and set the tooltip for the newly created element.
@@ -46,15 +46,14 @@ $.getJSON(apiUrlPrefix + "/command/routes",
 	 		$( "#select2-route-container" ).tooltip({ content: configuredTitle,
 	 				position: { my: "left+10 center", at: "right center" } });
  	});
- 	
+
 </script>
 
     <div id="routesDiv"  class="param">
-      <label for="route">Routes:</label>
+      <label for="route"><fmt:message key="div.rou" /></label>
       <select id="route" name="r" style="width: 380px" multiple="multiple"
       	title="Select which routes you want data for. You can use the Ctrl key along
       		   with the mouse to select multiple routes. Note: selecting all routes
-      		   indeed reads in data for all routes which means it could be 
+      		   indeed reads in data for all routes which means it could be
       		   somewhat slow." ></select>
     </div>
-    

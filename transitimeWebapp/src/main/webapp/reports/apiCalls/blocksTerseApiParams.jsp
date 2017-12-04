@@ -31,7 +31,7 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for Blocks Terse API
+   <fmt:message key="div.spfbta" />
 </div>
 
 <div id="mainDiv">

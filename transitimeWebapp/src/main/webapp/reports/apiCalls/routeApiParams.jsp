@@ -30,7 +30,7 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for routes API
+   <fmt:message key="div.spfra" />
 </div>
 
 <div id="mainDiv">

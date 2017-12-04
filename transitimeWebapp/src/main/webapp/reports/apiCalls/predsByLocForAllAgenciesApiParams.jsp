@@ -39,25 +39,25 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for Predictions by Location API
+   <fmt:message key="div.spfpbla" />
 </div>
 
 <div id="mainDiv">
   <div class="param">
-    <label for="latitude">Latitude:</label>
+    <label for="latitude"><fmt:message key="div.lat" /></label>
     <input type="text" id="latitude" size="10" />
   </div>
   <div class="param">
-    <label for="longitude">Longitude:</label>
+    <label for="longitude"><fmt:message key="div.lon" /></label>
     <input type="text" id="longitude" size="10" />
   </div>
   <div class="param">
-    <label for="maxDistance">Max Distance:</label>
-    <input type="text" id="maxDistance" size="10" /> <span class="note">meters (default is 1500m)</span>
+    <label for="maxDistance"><fmt:message key="div.md" /></label>
+    <input type="text" id="maxDistance" size="10" /> <span class="note"><fmt:message key="div.mdf" /></span>
   </div>
   <div class="param">
-    <label for="numPreds">Number Predictions:</label>
-    <input type="text" id="numPreds" size="10" /> <span class="note">(default is 3 per stop)</span>
+    <label for="numPreds"><fmt:message key="div.np" /></label>
+    <input type="text" id="numPreds" size="10" /> <span class="note"><fmt:message key="div.dfps" /></span>
   </div>
 
    <%-- Create json/xml format radio buttons --%>

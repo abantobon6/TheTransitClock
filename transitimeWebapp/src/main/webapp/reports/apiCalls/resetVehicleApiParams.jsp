@@ -35,7 +35,7 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for Reset Vehicle API
+   <fmt:message key="div.spfrva" />
 </div>
 
 <div id="mainDiv">

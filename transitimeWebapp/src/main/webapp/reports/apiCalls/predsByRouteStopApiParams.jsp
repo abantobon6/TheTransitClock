@@ -35,7 +35,7 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for Predictions by Route/Stop API
+   <fmt:message key="div.spfpbrsa" />
 </div>
 
 <div id="mainDiv">
@@ -43,13 +43,13 @@
    <jsp:include page="../params/routeSingle.jsp" />
 
    <div class="param">
-    <label for="stop">Stop ID:</label>
+    <label for="stop"><fmt:message key="div.stopid" /></label>
     <input type="text" id="stopId" size="10" />
    </div>
 
    <div class="param">
-    <label for="numPreds">Number Predictions:</label>
-    <input type="text" id="numPreds" size="10" /> <span class="note">(default is 3 per stop)</span>
+    <label for="numPreds"><fmt:message key="div.np" /></label>
+    <input type="text" id="numPreds" size="10" /> <span class="note"><fmt:message key="div.difps" /></span>
    </div>
 
    <%-- Create json/xml format radio buttons --%>

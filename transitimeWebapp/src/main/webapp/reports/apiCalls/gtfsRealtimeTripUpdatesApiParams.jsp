@@ -31,13 +31,13 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for GTFS-Realtime Trip Updates API
+   <fmt:message key="div.spfgrtua" />
 </div>
 
 <div id="mainDiv">
    <div id="radioButtonsDiv">
-     <input type="radio" name="format" value="binary" checked>Binary
-     <input type="radio" name="format" value="human">Human Readable
+     <input type="radio" name="format" value="binary" checked><fmt:message key="div.binary" />
+     <input type="radio" name="format" value="human"><fmt:message key="div.hr" />
    </div>
 
    <%-- Create submit button --%>

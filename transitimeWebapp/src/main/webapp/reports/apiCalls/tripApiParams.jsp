@@ -29,12 +29,12 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for Trip API
+   <fmt:message key="div.spfta" />
 </div>
 
 <div id="mainDiv">
   <div class="param">
-    <label for="trip">Trip:</label>
+    <label for="trip"><fmt:message key="div.trip" /></label>
     <input type="text" id="tripId" size="35" />
   </div>
 

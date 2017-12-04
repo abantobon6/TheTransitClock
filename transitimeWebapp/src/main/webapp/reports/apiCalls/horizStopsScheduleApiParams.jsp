@@ -31,7 +31,7 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for Schedule (Horizontal Stops) API
+   <fmt:message key="div.spfshsa" />
 </div>
 
 <div id="mainDiv">

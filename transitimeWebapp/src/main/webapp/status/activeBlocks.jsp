@@ -447,18 +447,18 @@ $(function() {
 <body>
 <%@include file="/template/header.jsp" %>
 
-<div id="title">Active Blocks</div>
+<div id="title"><fmt:message key="div.ab" /></div>
 <div id="accordion"></div>
 <div id="summary">
-  <span id="totalBlocksLabel" title="Total number of blocks">Blocks:</span>
+  <span id="totalBlocksLabel" title="Total number of blocks"><fmt:message key="div.blocks" /></span>
   <span id="totalBlocksValue" title="Total number of blocks"></span>
-  <span id="percentWithVehiclesLabel" title="Percentage of blocks that have an assigned and predictable vehicle">Assigned:</span>
+  <span id="percentWithVehiclesLabel" title="Percentage of blocks that have an assigned and predictable vehicle"><fmt:message key="div.assigned" /></span>
   <span id="percentWithVehiclesValue" title="Percentage of blocks that have an assigned and predictable vehicle"></span>
-  <span id="percentLateLabel" title="Percentage of blocks where vehicle is more than 4 minutes late">Late:</span>
+  <span id="percentLateLabel" title="Percentage of blocks where vehicle is more than 4 minutes late"><fmt:message key="div.late" /></span>
   <span id="percentLateValue" title="Percentage of blocks where vehicle is more than 4 minutes late"></span>
-  <span id="percentOnTimeLabel" title="Percentage of blocks where vehicle is on time">OnTime:</span>
+  <span id="percentOnTimeLabel" title="Percentage of blocks where vehicle is on time"><fmt:message key="div.ontime" /></span>
   <span id="percentOnTimeValue" title="Percentage of blocks where vehicle is on time"></span>
-  <span id="percentEarlyLabel" title="Percentage of blocks where vehicle is more than 1 minute early">Early:</span>
+  <span id="percentEarlyLabel" title="Percentage of blocks where vehicle is more than 1 minute early"><fmt:message key="div.early" /></span>
   <span id="percentEarlyValue" title="Percentage of blocks where vehicle is more than 1 minute early"></span>
 </div>
 </body>

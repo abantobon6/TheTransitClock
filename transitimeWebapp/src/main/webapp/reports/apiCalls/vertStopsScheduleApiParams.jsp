@@ -30,7 +30,7 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for Schedule (Vertical Stops) API
+   <fmt:message key="div.spfsvsa" />
 </div>
 
 <div id="mainDiv">

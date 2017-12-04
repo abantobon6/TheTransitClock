@@ -25,7 +25,7 @@
 <%@include file="/template/header.jsp" %>
 
 <div id="title">
-   Select Parameters for Service IDs API
+   <fmt:message key="div.spfsia" />
 </div>
 
 <div id="mainDiv">
