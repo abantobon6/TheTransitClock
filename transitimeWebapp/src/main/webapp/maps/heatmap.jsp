@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%-- This heapmap page was just an experiment and wasn't completed and doesn't work.
      It is kept here for now only in case want to look at creating another heatmap
      in the future. --%>
@@ -8,7 +8,7 @@
 
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title><fmt:message key="div.schedule" /></title>
 
   <!-- So that get proper sized map on iOS mobile device -->
