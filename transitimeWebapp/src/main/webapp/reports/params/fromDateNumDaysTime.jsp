@@ -1,9 +1,15 @@
-<%-- For specifying a begin date, number of days, begin time, and end time --%> 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="language" value="" scope="session" />
+<fmt:setLocale value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" />
+<fmt:requestEncoding value = "UTF-8" />
+<fmt:setBundle basename="org.transitclock.i18n.text" />
+<%-- For specifying a begin date, number of days, begin time, and end time --%>
 
 <script>
 $(function() {
   var calendarIconTooltip = "Popup calendar to select date";
-  
+
   $( "#beginDate" ).datepicker({
 	dateFormat: "mm-dd-yy",
     showOtherMonths: true,
@@ -14,7 +20,7 @@ $(function() {
     showOn: "both",
     // Don't allow going past current date
     maxDate: 0,
-    // onClose is for restricting end date to be after start date, 
+    // onClose is for restricting end date to be after start date,
     // though it is potentially confusing to user
     onClose: function( selectedDate ) {
       // Strangely need to set the title attribute for the icon again
@@ -22,7 +28,7 @@ $(function() {
       // FIXME $(".ui-datepicker-trigger").attr("title", calendarIconTooltip);
     }
   });
-  
+
   // Use a better tooltip than the default "..." for the calendar icon
   $(".ui-datepicker-trigger").attr("title", calendarIconTooltip);
 });
@@ -31,19 +37,19 @@ $(function() {
 <%
 String currentDateStr = org.transitime.utils.Time.dateStr(new java.util.Date());
 %>
-  
+
   <div class="param">
-    <label for="beginDate">Begin Date:</label>
-    <input type="text" id="beginDate" name="beginDate" 
-    	title="The first day of the range you want to examine data for. 
-    	<br><br> Begin date must be before the end date." 
+    <label for="beginDate"><fmt:message key="div.bd" /></label>
+    <input type="text" id="beginDate" name="beginDate"
+    	title="The first day of the range you want to examine data for.
+    	<br><br> Begin date must be before the end date."
     	size="10"
     	value="<%= currentDateStr%>" />
   </div>
 
   <div class="param">
-    <label for=numDays>Number of days:</label>
-    <select id="numDays" name="numDays" 
+    <label for=numDays><fmt:message key="div.nod" /></label>
+    <select id="numDays" name="numDays"
     	title="The number of days you want to examine data for." >
       <option value="1">1</option>
       <option value="2">2</option>
@@ -78,25 +84,25 @@ String currentDateStr = org.transitime.utils.Time.dateStr(new java.util.Date());
       <option value="31">31</option>
     </select>
   </div>
-  
+
   <div class="param">
-    <label for="beginTime">Begin Time:</label>
+    <label for="beginTime"><fmt:message key="div.bt" /></label>
     <input id="beginTime" name="beginTime"
     	title="Optional begin time of day to limit query to. Useful if
-    	    want to see result just for rush hour, for example. Leave blank 
-    		if want data for entire day. 
-    		<br/><br/>Format: hh:mm, as in '07:00' for 7AM." 
+    	    want to see result just for rush hour, for example. Leave blank
+    		if want data for entire day.
+    		<br/><br/>Format: hh:mm, as in '07:00' for 7AM."
     	size="3"
     	value="" /> <span class="note">(hh:mm)</span>
   </div>
 
   <div class="param">
-    <label for="endTime">End Time:</label>
-    <input id="endTime" name="endTime" 
+    <label for="endTime"><fmt:message key="div.et" /></label>
+    <input id="endTime" name="endTime"
     	title="Optional end time of day to limit query to. Useful if
-    	    want to see result just for rush hour, for example. Leave blank 
-    		if want data for entire day. 
-    		<br/><br/>Format: hh:mm, as in '09:00' for 9AM. 
+    	    want to see result just for rush hour, for example. Leave blank
+    		if want data for entire day.
+    		<br/><br/>Format: hh:mm, as in '09:00' for 9AM.
     		Use '23:59' for midnight."
     	size="3"
     	value="" /> <span class="note">(hh:mm)</span>

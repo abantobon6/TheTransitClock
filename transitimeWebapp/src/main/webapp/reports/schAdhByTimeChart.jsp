@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ page import="org.transitime.utils.web.WebUtils" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -8,12 +8,12 @@
 
   <style>
     #chart_div {
-      width: 98%; 
+      width: 98%;
       height: 600px;
       margin-top: 10px;
       margin-left: 10px;
     }
-    
+
     #loading {
         position: fixed;
 		left: 0px;
@@ -23,7 +23,7 @@
 		z-index: 9999;
 		background: url('images/page-loader.gif') 50% 50% no-repeat rgb(249,249,249);
       }
-      
+
     #errorMessage {
 	  display: none;
       position: fixed;
@@ -40,32 +40,40 @@
 	}
   </style>
 
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Schedule Adherence</title>
-  
+
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
   </head>
   <body>
     <%@include file="/template/header.jsp" %>
-  
+
+    <div id="chart_div"></div>
+    <div id="loading"></div>
+    <div id="errorMessage"></div>
+  </body>
+
+  <script type="text/javascript">
   <%
   String allowableEarly = request.getParameter("allowableEarly");;
   String allowableLate = request.getParameter("allowableLate");;
-  String chartSubtitle = allowableEarly + " min early to " 
-    + allowableLate + " min late</br>" 
-	+ request.getParameter("dateRange");
-  
+  String chartTitle = "Schedule Adherence by Route\\n"
+    + allowableEarly + " min early to " + allowableLate + " min late\\n"
+	+ request.getParameter("beginDate")
+	+ " for " + numDays + " day" + (numDays.equals("1") ? "" : "s");
+
   String beginTime = request.getParameter("beginTime");
   String endTime = request.getParameter("endTime");
-  if ((beginTime != null && !beginTime.isEmpty()) 
+  if ((beginTime != null && !beginTime.isEmpty())
 		  || (endTime != null && !endTime.isEmpty())) {
 	  if (beginTime.isEmpty())
 		  beginTime = "00:00"; // default value
 	  if (endTime.isEmpty())
 		  endTime = "24:00";   // default value
-		  chartSubtitle += ", " + beginTime + " to " + endTime;
-  }  
+	  chartTitle += ", " + beginTime + " to " + endTime;
+  }
+
 %>
     <div id="title"></div>
     <div id="subtitle"><%= chartSubtitle %></div>
@@ -73,20 +81,23 @@
     <div id="loading"></div>
     <div id="errorMessage"></div>
   </body>
-  
+
   <script type="text/javascript">
-  
+
 
 var MAX_LATE_BUCKET = -1800;
 var MAX_EARLY_BUCKET = 1200;
-	
+
 var globalDataTable;
 var globalChartOptions;
 
 function drawChart() {
     // Actually create the chart
     var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-    chart.draw(globalDataTable, globalChartOptions);    
+    chart.draw(globalDataTable, globalChartOptions);
+
+    // Get rid of the loading icon
+    $("#loading").fadeOut("slow");
 }
 
 /**
@@ -96,35 +107,35 @@ function drawChart() {
 function createDataTableAndDrawChart(jsonData) {
     // Initialize the data array with the header that describes the columns
 	var dataArray = [[
-		'Early/Late', 
-		'Stops', 
-		{ role: 'style' }, 
-		{ role: 'annotation' }, 
+		'Early/Late',
+		'Stops',
+		{ role: 'style' },
+		{ role: 'annotation' },
 		{ role: 'tooltip' }
 	]];
-	
+
     var minBucket = 0;
     var maxBucket = 0;
-    
+
     for (var i in jsonData.data) {
     	var bucket = jsonData.data[i];
-    	
+
     	// Ignore buckets that are really early or really late
     	if (bucket.time_period < MAX_LATE_BUCKET || bucket.time_period > MAX_EARLY_BUCKET)
     		continue;
-    	
+
     	// Keep track of min and max bucket so can create tick marks just
     	// for where there is data.
     	if (bucket.time_period < minBucket)
     		minBucket = bucket.time_period;
     	if (bucket.time_period > maxBucket)
     		maxBucket = bucket.time_period;
-    	
+
     	// Create row of data for chart using the current time bucket
     	var timeFloor = bucket.time_period / 60.0;
-    	
+
     	var counts = bucket.counts_per_time_period;
-    	
+
     	var color;
     	if (bucket.time_period / 60.0 < -<%= allowableLate %>)
     		color = '#F0DB56'; // The late color
@@ -133,9 +144,9 @@ function createDataTableAndDrawChart(jsonData) {
     	else
     		color = '#E84D5F'; // The early color
     	var style = 'color: ' + color + '; stroke-color: #888; stroke-width: 1';
-    	
+
     	var annotation = bucket.counts_per_time_period;
-    	
+
     	var tooltip = bucket.counts_per_time_period + ' stops for vehicles that are ';
     	if (bucket.time_period < 0) {
     		// vehicle late
@@ -144,12 +155,12 @@ function createDataTableAndDrawChart(jsonData) {
     		// vehicle early
     		tooltip += bucket.time_period + 's to ' + (bucket.time_period+30) + 's early. ';
     	}
-    	
+
     	var row = [timeFloor, counts, style, annotation, tooltip];
     	dataArray.push(row);
     }
 	globalDataTable = google.visualization.arrayToDataTable(dataArray);
-	
+
 
 	// By putting the tick marks at partial intervals, such as 0.75,
 	// but then labeling them with the integer label we cleverly
@@ -158,7 +169,7 @@ function createDataTableAndDrawChart(jsonData) {
 	// so that horizontal axis is drawn as wide as possible. This is
 	// important becauses if tick marks are configured then they are
 	// drawn even if there is no corresponding data.
-	var ticks = []; 
+	var ticks = [];
 	// Find minimum tick that is divisible by 2
 	var minTick = Math.ceil(minBucket/60/2) * 2;
 	var maxTick = Math.floor(maxBucket/60/2) * 2;
@@ -170,7 +181,7 @@ function createDataTableAndDrawChart(jsonData) {
     globalChartOptions = {
           animation: {
           	 startup: true,
-          	 duration: 500, 
+          	 duration: 500,
           	 easing: 'out'
           },
           chartArea: {top:10, width: '86%', height: '90%'},
@@ -179,11 +190,11 @@ function createDataTableAndDrawChart(jsonData) {
         	  title: "Number of stops per time interval",
         	  textStyle: {fontSize: 12},
         	  },
-          hAxis: { 
+          hAxis: {
         	  ticks: ticks,
         	  title: "Minutes vehicle late (negative) or early (positive)",
         	  // The chart always draws the baseline at value 0 over the chart.
-        	  // Since the baseline isn't true zero, since using bars and 
+        	  // Since the baseline isn't true zero, since using bars and
         	  // putting tick marks at the edges of the bars, don't want this
         	  // the line to be so visible. Only thing that we can do is to
         	  // make it the same color as the bar, which which will be
@@ -211,8 +222,8 @@ function determineChartTitle(routeData) {
 
 function getDataAndDrawChart() {
     // Get agency and route name for titles
-	$.getJSON(apiUrlPrefix + "/command/routes?r=<%= request.getParameter("r") %>", 
-			  determineChartTitle);	
+	$.getJSON(apiUrlPrefix + "/command/routes?r=<%= request.getParameter("r") %>",
+			  determineChartTitle);
 
 	$.ajax({
 	  	// The page being requested

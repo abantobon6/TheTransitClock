@@ -30,6 +30,11 @@
 			<artifactId>transitimeCore</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+<dependency>
+    <groupId>org.glassfish.web</groupId>
+    <artifactId>javax.servlet.jsp.jstl</artifactId>
+    <version>1.2.4</version>
+</dependency>
 	</dependencies>
 	<build>
 		<!-- Set the name of the war file -->
@@ -44,6 +49,7 @@
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
 		</plugins>

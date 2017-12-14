@@ -219,8 +219,11 @@ for (int temp = 0; temp < nList.getLength(); temp++) {
 			AvlReport avlReport =
 									 new AvlReport(vehicleId, cal.getTime().getTime(), latitude,
 																		longitude, heading, speed, vehicleId);
-			processAvlReport(avlReport);
-			avlReports.add(avlReport);
+			if ( avlReport != null )
+				{
+					processAvlReport(avlReport);
+					avlReports.add(avlReport);
+				}
 	}
 }
 Thread.sleep(1000*5);
