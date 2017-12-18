@@ -216,4 +216,5 @@ div.dblock = Zadanie
 div.dtrip = Kurs
 div.dto = Do
 div.drunreport = Generuj Raport
+div.drunapicall = Generuj Wywołanie API
 div.scfor = Rozkład dla
