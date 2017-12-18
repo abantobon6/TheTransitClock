@@ -208,6 +208,7 @@ div.ddirection = Kierunek
 div.dtrippattern = Wzór kursu
 div.dstarttime = Początkowy czas
 div.dschadh = Opóź./Przys.
+div.schadh = Opóź./Przys.
 div.dvehicle = Pojazd
 div.dgpstime = Czas GPS
 div.dheadsign = Kierunek

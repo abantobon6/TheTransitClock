@@ -1,2 +1,2 @@
 <%-- For creating a centered submit button --%>
-<div class="submitDiv"><input type='submit' id='submit' value='<fmt:message key="div.drunreport" />'/></div> 
+<div class="submitDiv"><button type='submit' id='submit'><fmt:message key="div.drunreport" /></button></div> 
