@@ -155,10 +155,10 @@ function predictionCallback(preds, status) {
 	predictionsTimeout = setTimeout(getPredictionsJson, 20000, routeStopPreds.routeShortName, routeStopPreds.stopId);
 
 	// Add route and stop info
-	var content = '<b>Route:</b> ' + routeStopPreds.routeName + '<br/>'
-		+ '<b>Stop:</b> ' + routeStopPreds.stopName + '<br/>';
+	var content = '<b><fmt:message key="div.droute" />:</b> ' + routeStopPreds.routeName + '<br/>'
+		+ '<b><fmt:message key="div.dstop" />:</b> ' + routeStopPreds.stopName + '<br/>';
 	if (verbose)
-		content += '<b>Stop Id:</b> ' + routeStopPreds.stopId + '<br/>';
+		content += '<b><fmt:message key="div.dstop" /> Id:</b> ' + routeStopPreds.stopId + '<br/>';
 
 	// For each destination add predictions
 	for (var i in routeStopPreds.dest) {
@@ -169,7 +169,7 @@ function predictionCallback(preds, status) {
 
 		// Add the destination/headsign info
 		if (routeStopPreds.dest[i].headsign)
-			content += '<b>Destination:</b> ' + routeStopPreds.dest[i].headsign + '<br/>';
+			content += '<b><fmt:message key="div.ddestination" />:</b> ' + routeStopPreds.dest[i].headsign + '<br/>';
 
 		// Add each prediction for the current destination
 		if (routeStopPreds.dest[i].pred.length > 0) {
@@ -201,14 +201,14 @@ function predictionCallback(preds, status) {
 				*/
 				// If in verbose mode add vehicle info
 				if (verbose)
-					content += ' <span class="vehicle">(vehicle ' + pred.vehicle + ')</span>';
+					content += ' <span class="vehicle">(<fmt:message key="div.dsvehicle" /> ' + pred.vehicle + ')</span>';
 			}
-			content += ' minutes';
+			content += ' <fmt:message key="div.dminutes" />';
 
 			content += '</span>';
 		} else {
 			// There are no predictions so let user know
-			content += "No predictions";
+			content += '<fmt:message key="div.dnopredictions" />';
 		}
 	}
 
@@ -318,8 +318,8 @@ function routeConfigCallback(routesData, status) {
 		// Popup trip pattern info when user clicks on path
 		if (verbose) {
 			polyline.on('click', function(e) {
-				var content = "<b>TripPattern:</b> " + this.shape.tripPattern
-					+ "<br/><b>Headsign:</b> " + this.shape.headsign;
+				var content = '<b><fmt:message key="div.dtrippattern" />:</b> ' + this.shape.tripPattern
+					+ '<br/><b><fmt:message key="div.dheadsign" />:</b> ' + this.shape.headsign;
 				L.popup(tripPatternPopupOptions)
 					.setLatLng(e.latlng)
 					.setContent(content)
@@ -376,7 +376,7 @@ function formatSpeed(speedInMetersPerSec) {
 
 	// Convert m/s to km/hr and truncate to 1 decimal place to make
 	// output pretty
-	return (parseFloat(speedInMetersPerSec) * 3.6).toFixed(1) + " km/hr";
+	return (parseFloat(speedInMetersPerSec) * 3.6).toFixed(1) + ' <fmt:message key="div.dkmhr" />';
 }
 
 /**
@@ -385,35 +385,35 @@ function formatSpeed(speedInMetersPerSec) {
  */
 function getVehiclePopupContent(vehicleData) {
     var layoverStr = verbose && vehicleData.layover ?
-			 ("<br/><b>Layover:</b> " + vehicleData.layover) : "";
+			 ('<br/><b><fmt:message key="div.dlayover" />:</b> ' + vehicleData.layover) : "";
     var layoverDepartureStr = vehicleData.layover ?
-    		 ("<br/><b>Departure:</b> " +
+    		 ('<br/><b><fmt:message key="div.ddeparture" />:</b> ' +
     				 dateFormat(vehicleData.layoverDepTime)) : "";
     var nextStopNameStr = vehicleData.nextStopName ?
-    		 ("<br/><b>Next Stop:</b> " + vehicleData.nextStopName) : "";
+    		 ('<br/><b><fmt:message key="div.dnextstop" />:</b> ' + vehicleData.nextStopName) : "";
     if (verbose && vehicleData.nextStopId)
-    	nextStopNameStr += "<br/><b>Next Stop Id:</b> " + vehicleData.nextStopId;
+    	nextStopNameStr += '<br/><b><fmt:message key="div.dnextstop" /> Id:</b> ' + vehicleData.nextStopId;
     var driver = vehicleData.driver ?
-    		"<br/><b>Driver:</b> " + vehicleData.driver : "";
-    var latLonHeadingStr = verbose ? "<br/><b>Lat:</b> " + vehicleData.loc.lat
-    			+ "<br/><b>Lon:</b> " + vehicleData.loc.lon
-    			+ "<br/><b>Heading:</b> " + vehicleData.loc.heading
-    			+ "<br/><b>Speed:</b> " + formatSpeed(vehicleData.loc.speed)
+    		'<br/><b><fmt:message key="div.ddriver" />:</b> ' + vehicleData.driver : "";
+    var latLonHeadingStr = verbose ? '<br/><b><fmt:message key="div.dlat" />:</b> ' + vehicleData.loc.lat
+    			+ '<br/><b><fmt:message key="div.dlon" />:</b> ' + vehicleData.loc.lon
+    			+ '<br/><b><fmt:message key="div.dheading" />:</b> ' + vehicleData.loc.heading
+    			+ '<br/><b><fmt:message key="div.dspeed" />:</b> ' + formatSpeed(vehicleData.loc.speed)
     			: "";
 	var gpsTimeStr = dateFormat(vehicleData.loc.time);
-    var directionStr = verbose ? "<br/><b>Direction:</b> " + vehicleData.direction : "";
-    var tripPatternStr = verbose ? "<br/><b>Trip Pattern:</b> " + vehicleData.tripPattern : "";
-    var startTimeStr = vehicleData.isScheduledService ? "" : "<br/><b>Start Time:</b> "+dateFormat(vehicleData.freqStartTime/1000);
-    var schAdhStr = vehicleData.isScheduledService ? "<br/><b>SchAdh:</b> " + vehicleData.schAdhStr : ""
-    var content = "<b>Vehicle:</b> " + vehicleData.id
-    	+ "<br/><b>Route: </b> " + vehicleData.routeShortName
+    var directionStr = verbose ? '<br/><b><fmt:message key="div.ddirection" />:</b> ' + vehicleData.direction : "";
+    var tripPatternStr = verbose ? '<br/><b><fmt:message key="div.dtrippattern" />:</b> ' + vehicleData.tripPattern : "";
+    var startTimeStr = vehicleData.isScheduledService ? "" : '<br/><b><fmt:message key="div.dstarttime" />:</b> '+dateFormat(vehicleData.freqStartTime/1000);
+    var schAdhStr = vehicleData.isScheduledService ? '<br/><b><fmt:message key="div.schadh" />:</b> ' + vehicleData.schAdhStr : ""
+    var content = '<b><fmt:message key="div.dvehicle" />:</b> ' + vehicleData.id
+    	+ '<br/><b><fmt:message key="div.droute" />: </b> ' + vehicleData.routeShortName
 		+ latLonHeadingStr
-		+ "<br/><b>GPS Time:</b> " + gpsTimeStr
-		+ "<br/><b>Headsign:</b> " + vehicleData.headsign
+		+ '<br/><b><fmt:message key="div.dgpstime" />:</b> ' + gpsTimeStr
+		+ '<br/><b><fmt:message key="div.dheadsign" />:</b> ' + vehicleData.headsign
 		+ directionStr
 		+ schAdhStr
-		+ "<br/><b>Block:</b> " + vehicleData.block
-		+ "<br/><b>Trip:</b> " + vehicleData.trip
+		+ '<br/><b><fmt:message key="div.dblock" />:</b> ' + vehicleData.block
+		+ '<br/><b><fmt:message key="div.dtrip" />:</b> ' + vehicleData.trip
 		+ tripPatternStr
 		+ startTimeStr
 		+ layoverStr

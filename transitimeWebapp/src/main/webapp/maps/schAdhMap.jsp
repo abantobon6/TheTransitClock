@@ -47,12 +47,12 @@ var vehicleLayer;
  * schedule adherence.
  */
 function getVehiclePopupContent(vehicle) {
-	return "<b>Vehicle:</b> " + vehicle.id
-		+ "<br/><b>Route:</b> " + vehicle.routeName
-		+ "<br/><b>To:</b> " + vehicle.headsign
-		+ "<br/><b>SchAhd:</b> " + vehicle.schAdhStr
-		+ "<br/><b>Block:</b> " + vehicle.block
-		+ "<br/><b>Driver:</b> " + vehicle.driver;
+	return '<b><fmt:message key="div.dvehicle" />:</b> ' + vehicle.id
+		+ '<br/><b><fmt:message key="div.droute" />:</b> ' + vehicle.routeName
+		+ '<br/><b><fmt:message key="div.dto" />:</b> ' + vehicle.headsign
+		+ '<br/><b><fmt:message key="div.dschadh" />:</b> ' + vehicle.schAdhStr
+		+ '<br/><b><fmt:message key="div.dblock" />:</b> ' + vehicle.block
+		+ '<br/><b><fmt:message key="div.ddriver" />:</b> ' + vehicle.driver;
 }
 
 /**
