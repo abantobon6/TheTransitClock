@@ -61,7 +61,7 @@
 <%
   String allowableEarly = request.getParameter("allowableEarly");;
   String allowableLate = request.getParameter("allowableLate");;
-  String chartTitle = '<fmt:message key="div.scheduleroutr" />'+'\\n'
+  String chartTitle = '<fmt:message key="div.scheduleroutr" />'+"\\n"
     + allowableEarly + '<fmt:message key="div.minearly" />' + allowableLate + '<fmt:message key="div.minlate" />'+'\\n'
 	+ request.getParameter("beginDate")
 	+ '<fmt:message key="div.for" />' + numDays + '<fmt:message key="div.day" />' + (numDays.equals("1") ? "" : "s");
