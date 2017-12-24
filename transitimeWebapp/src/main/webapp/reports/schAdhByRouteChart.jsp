@@ -55,12 +55,12 @@
   <div id="loading"></div>
   <div id="errorMessage"></div>
 </body>
-
+<%
 <script type="text/javascript">
 
-<%
-  String allowableEarly = request.getParameter("allowableEarly");;
-  String allowableLate = request.getParameter("allowableLate");;
+
+  String allowableEarly = request.getParameter("allowableEarly");
+  String allowableLate = request.getParameter("allowableLate");
   String chartTitle = '<fmt:message key="div.scheduleroutr" />'+"\\n"
     + allowableEarly + '<fmt:message key="div.minearly" />' + allowableLate + '<fmt:message key="div.minlate" />'+'\\n'
 	+ request.getParameter("beginDate")
