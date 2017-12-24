@@ -49,13 +49,7 @@
 <body>
   <%@include file="/template/header.jsp" %>
 
-  <div id="title"><fmt:message key="div.scheduleroutr" /></div>
-  <div id="subtitle"><%= chartSubtitle %></div>
-  <div id="chart_div"></div>
-  <div id="loading"></div>
-  <div id="errorMessage"></div>
-</body>
-<%
+<%=
 <script type="text/javascript">
 
 
@@ -255,4 +249,9 @@ var globalNumberOfRoutes;
 
 </script>
 
+  <div id="title"><fmt:message key="div.scheduleroutr" /></div>
+  <div id="chart_div"></div>
+  <div id="loading"></div>
+  <div id="errorMessage"></div>
+</body>
 </html>
