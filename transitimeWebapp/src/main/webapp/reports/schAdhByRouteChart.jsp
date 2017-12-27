@@ -61,9 +61,9 @@
 %>
   String chartTitle = '<fmt:message key="div.scheduleroutr" />'+"\\n"
     + allowableEarly + '<fmt:message key="div.minearly" />' + allowableLate + '<fmt:message key="div.minlate" />'+'\\n'
-<%
-	+ request.getParameter("beginDate")
-%>
+
+	+ <%= request.getParameter("beginDate") %>
+
 	+ '<fmt:message key="div.for" />' + numDays + '<fmt:message key="div.day" />' + (numDays.equals("1") ? "" : "s");
 <%
   String beginTime = request.getParameter("beginTime");
