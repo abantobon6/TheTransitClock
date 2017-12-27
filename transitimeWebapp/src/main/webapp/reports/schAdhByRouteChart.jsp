@@ -52,9 +52,9 @@
   <div id="chart_div"></div>
   <div id="loading"></div>
   <div id="errorMessage"></div>
-<%
-<script type="text/javascript">
 
+<script type="text/javascript">
+<%
 
   String allowableEarly = request.getParameter("allowableEarly");
   String allowableLate = request.getParameter("allowableLate");
@@ -140,7 +140,7 @@ var globalNumberOfRoutes;
 
         $("#loading").fadeOut("slow");
   }
-<%
+
   function createDataTableAndDrawChart(jsonData) {
 	  // Initialize dataArray with the column info
 	  var dataArray = [[
@@ -249,7 +249,7 @@ var globalNumberOfRoutes;
             clearTimeout(globalTimer);
             globalTimer = setTimeout(drawChart, 300)
           };
-%>
+
 </script>
 
 

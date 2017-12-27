@@ -225,7 +225,7 @@
 	var agencyName = routeData.agency;
 	var routeName = routeData.routes[0].name;
 
-	  <%
+
 	  String allowableEarly = request.getParameter("allowableEarly");;
 	  String allowableLate = request.getParameter("allowableLate");;
 	  String chartParams =
