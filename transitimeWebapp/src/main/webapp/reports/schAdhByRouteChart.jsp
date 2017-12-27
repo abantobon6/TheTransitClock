@@ -49,7 +49,10 @@
 <body>
   <%@include file="/template/header.jsp" %>
 
-<%=
+  <div id="chart_div"></div>
+  <div id="loading"></div>
+  <div id="errorMessage"></div>
+<%
 <script type="text/javascript">
 
 
@@ -137,7 +140,7 @@ var globalNumberOfRoutes;
 
         $("#loading").fadeOut("slow");
   }
-
+<%
   function createDataTableAndDrawChart(jsonData) {
 	  // Initialize dataArray with the column info
 	  var dataArray = [[
@@ -246,12 +249,9 @@ var globalNumberOfRoutes;
             clearTimeout(globalTimer);
             globalTimer = setTimeout(drawChart, 300)
           };
-
+%>
 </script>
 
-  <div id="title"><fmt:message key="div.scheduleroutr" /></div>
-  <div id="chart_div"></div>
-  <div id="loading"></div>
-  <div id="errorMessage"></div>
+
 </body>
 </html>

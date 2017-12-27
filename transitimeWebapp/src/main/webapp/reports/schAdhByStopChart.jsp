@@ -58,7 +58,7 @@
 </body>
 
 <script type="text/javascript">
-
+<%
 
   function drawChart(directionId, divId, dataTable, numberOfStops) {
       // Need to set height of the chart div
@@ -287,7 +287,7 @@
             clearTimeout(globalTimer);
             globalTimer = setTimeout(drawCharts, 300)
           };
-
+%>
 </script>
 
 </html>
