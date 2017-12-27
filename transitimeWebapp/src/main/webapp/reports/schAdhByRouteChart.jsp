@@ -68,6 +68,7 @@
 <%
   String beginTime = request.getParameter("beginTime");
   String endTime = request.getParameter("endTime");
+%>
   if (!beginTime.isEmpty() || !endTime.isEmpty()) {
 	  if (beginTime.isEmpty())
 		  beginTime = "00:00"; // default value
@@ -76,7 +77,7 @@
 	  chartTitle += ", " + beginTime + " to " + endTime;
   }
 
-%>
+
 
 <script type="text/javascript">
 
