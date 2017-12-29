@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
 <%@ page import="org.transitime.utils.web.WebUtils" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
@@ -12,8 +12,8 @@ if (agencyId == null || agencyId.isEmpty()) {
 <html>
 <head>
   <%@include file="/template/includes.jsp" %>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title><fmt:message key="div.lastgpsreports" /></title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Last GPS Reports for Vehicles</title>
 
 <style>
 
@@ -24,7 +24,7 @@ if (agencyId == null || agencyId.isEmpty()) {
 /* Programatically create contents of table */
 function dataReadCallback(jsonData) {
 	var table = document.getElementById("dataTable");
-
+	
 	for (var i=0; i<jsonData.data.length; ++i) {
 		var vehicleInfo = jsonData.data[i];
 
@@ -52,9 +52,9 @@ $( document ).ready(function() {
 </head>
 <body>
 <%@include file="/template/header.jsp" %>
-<div id="title"><fmt:message key="div.lgpsr" /></div>
+<div id="title">Last GPS Reports for Past 24 Hours</div>
 <table id="dataTable">
-  <tr><th><fmt:message key="div.lv" /></th><th><fmt:message key="div.lgps" /></th></tr>
+  <tr><th>Vehicle</th><th>Last GPS</th></tr>
   </table>
 </body>
 </html>
