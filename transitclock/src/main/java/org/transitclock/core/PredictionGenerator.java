@@ -1,6 +1,6 @@
 /*
  * This file is part of Transitime.org
- * 
+ *
  * Transitime.org is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License (GPL) as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -31,10 +31,13 @@ import org.transitclock.config.BooleanConfigValue;
 import org.transitclock.config.IntegerConfigValue;
 import org.transitclock.core.dataCache.PredictionComparator;
 import org.transitclock.core.dataCache.PredictionDataCache;
-import org.transitclock.core.dataCache.StopArrivalDepartureCache;
+import org.transitclock.core.dataCache.StopArrivalDepartureCacheFactory;
 import org.transitclock.core.dataCache.StopArrivalDepartureCacheKey;
-import org.transitclock.core.dataCache.TripDataHistoryCache;
+import org.transitclock.core.dataCache.TripDataHistoryCacheFactory;
+import org.transitclock.core.dataCache.TripDataHistoryCacheInterface;
 import org.transitclock.core.dataCache.TripKey;
+import org.transitclock.core.dataCache.ehcache.StopArrivalDepartureCache;
+import org.transitclock.core.dataCache.ehcache.TripDataHistoryCache;
 import org.transitclock.db.structs.ArrivalDeparture;
 import org.transitclock.db.structs.AvlReport;
 import org.transitclock.db.structs.Block;
@@ -48,31 +51,31 @@ import org.transitclock.ipc.data.IpcPredictionsForRouteStopDest;
  * an alternate method simply implement this interface and configure
  * PredictionGeneratorFactory to instantiate the new class when a
  * PredictionGenerator is needed.
- * 
+ *
  * @author SkiBu Smith
- * 
+ *
  */
 public abstract class PredictionGenerator {
 
 	/**
 	 * Generates and returns the predictions for the vehicle.
-	 * 
+	 *
 	 * @param vehicleState
 	 *            Contains the new match for the vehicle that the predictions
 	 *            are to be based on.
 	 */
 	public abstract List<IpcPrediction> generate(VehicleState vehicleState);
-	
-		
+
+
 	private static final IntegerConfigValue closestVehicleStopsAhead = new IntegerConfigValue(
 			"transitclock.prediction.closestvehiclestopsahead", new Integer(2),
 			"Num stops ahead a vehicle must be to be considers in the closest vehicle calculation");
-	
-	protected static BooleanConfigValue storeTravelTimeStopPathPredictions = new BooleanConfigValue("transitclock.core.storeTravelTimeStopPathPredictions", 
+
+	protected static BooleanConfigValue storeTravelTimeStopPathPredictions = new BooleanConfigValue("transitclock.core.storeTravelTimeStopPathPredictions",
 			false,
 			"This is set to true to record all travelTime  predictions for individual stopPaths generated. Useful for comparing performance of differant algorithms. (MAPE comparison). Not for normal use as will generate massive amounts of data.");
-	
-	protected static BooleanConfigValue storeDwellTimeStopPathPredictions = new BooleanConfigValue("transitclock.core.storeDwellTimeStopPathPredictions", 
+
+	protected static BooleanConfigValue storeDwellTimeStopPathPredictions = new BooleanConfigValue("transitclock.core.storeDwellTimeStopPathPredictions",
 			false,
 			"This is set to true to record all travelTime  predictions for individual dwell times generated. Useful for comparing performance of differant algorithms. (MAPE comparison). Not for normal use as will generate massive amounts of data.");
 
@@ -81,35 +84,35 @@ public abstract class PredictionGenerator {
 		StopArrivalDepartureCacheKey nextStopKey = new StopArrivalDepartureCacheKey(
 				indices.getStopPath().getStopId(),
 				new Date(currentVehicleState.getMatch().getAvlTime()));
-										
-		/* TODO how do we handle the the first stop path. Where do we get the first stop id. */ 		 
+
+		/* TODO how do we handle the the first stop path. Where do we get the first stop id. */
 		if(!indices.atBeginningOfTrip())
-		{						
+		{
 			String currentStopId = indices.getPreviousStopPath().getStopId();
-			
+
 			StopArrivalDepartureCacheKey currentStopKey = new StopArrivalDepartureCacheKey(currentStopId,
 					new Date(currentVehicleState.getMatch().getAvlTime()));
-	
-			List<ArrivalDeparture> currentStopList = StopArrivalDepartureCache.getInstance().getStopHistory(currentStopKey);
-	
-			List<ArrivalDeparture> nextStopList = StopArrivalDepartureCache.getInstance().getStopHistory(nextStopKey);
-			
+
+			List<ArrivalDeparture> currentStopList = StopArrivalDepartureCacheFactory.getInstance().getStopHistory(currentStopKey);
+
+			List<ArrivalDeparture> nextStopList = StopArrivalDepartureCacheFactory.getInstance().getStopHistory(nextStopKey);
+
 			if (currentStopList != null && nextStopList != null) {
 				// lists are already sorted when put into cache.
 				for (ArrivalDeparture currentArrivalDeparture : currentStopList) {
-					
-					if(currentArrivalDeparture.isDeparture() 
-							&& currentArrivalDeparture.getVehicleId() != currentVehicleState.getVehicleId() 
+
+					if(currentArrivalDeparture.isDeparture()
+							&& currentArrivalDeparture.getVehicleId() != currentVehicleState.getVehicleId()
 							&& (currentVehicleState.getTrip().getDirectionId()==null || currentVehicleState.getTrip().getDirectionId().equals(currentArrivalDeparture.getDirectionId())))
 					{
 						ArrivalDeparture found;
-											
+
 						if ((found = findMatchInList(nextStopList, currentArrivalDeparture)) != null) {
 							TravelTimeDetails travelTimeDetails=new TravelTimeDetails(currentArrivalDeparture, found);
 							if(travelTimeDetails.getTravelTime()>0)
-							{		
+							{
 								return travelTimeDetails;
-								
+
 							}else
 							{
 								// must be going backwards
@@ -130,42 +133,42 @@ public abstract class PredictionGenerator {
 		StopArrivalDepartureCacheKey nextStopKey = new StopArrivalDepartureCacheKey(
 				indices.getStopPath().getStopId(),
 				new Date(currentVehicleState.getMatch().getAvlTime()));
-										
-		/* TODO how do we handle the the first stop path. Where do we get the first stop id. */ 		 
+
+		/* TODO how do we handle the the first stop path. Where do we get the first stop id. */
 		if(!indices.atBeginningOfTrip())
-		{						
+		{
 			String currentStopId = indices.getPreviousStopPath().getStopId();
-			
+
 			StopArrivalDepartureCacheKey currentStopKey = new StopArrivalDepartureCacheKey(currentStopId,
 					new Date(currentVehicleState.getMatch().getAvlTime()));
-	
-			List<ArrivalDeparture> currentStopList = StopArrivalDepartureCache.getInstance().getStopHistory(currentStopKey);
-	
-			List<ArrivalDeparture> nextStopList = StopArrivalDepartureCache.getInstance().getStopHistory(nextStopKey);
-	
+
+			List<ArrivalDeparture> currentStopList = StopArrivalDepartureCacheFactory.getInstance().getStopHistory(currentStopKey);
+
+			List<ArrivalDeparture> nextStopList = StopArrivalDepartureCacheFactory.getInstance().getStopHistory(nextStopKey);
+
 			if (currentStopList != null && nextStopList != null) {
 				// lists are already sorted when put into cache.
 				for (ArrivalDeparture currentArrivalDeparture : currentStopList) {
-					
+
 					if(currentArrivalDeparture.isDeparture() && currentArrivalDeparture.getVehicleId() != currentVehicleState.getVehicleId()
 							&& (currentVehicleState.getTrip().getDirectionId()==null || currentVehicleState.getTrip().getDirectionId().equals(currentArrivalDeparture.getDirectionId())))
 					{
 						ArrivalDeparture found;
-											
+
 						if ((found = findMatchInList(nextStopList, currentArrivalDeparture)) != null) {
 							if(found.getTime() - currentArrivalDeparture.getTime()>0)
-							{	
+							{
 								Block currentBlock=null;
-								/* block is transient in arrival departure so when read from database need to get from dbconfig. */ 
+								/* block is transient in arrival departure so when read from database need to get from dbconfig. */
 								if(currentArrivalDeparture.getBlock()==null&&currentArrivalDeparture.getServiceId()!=null && currentArrivalDeparture.getBlockId()!=null)
-								{																																			
+								{
 									DbConfig dbConfig = Core.getInstance().getDbConfig();
-									
+
 									currentBlock=dbConfig.getBlock(currentArrivalDeparture.getServiceId(), currentArrivalDeparture.getBlockId());
 								}else
 								{
 									currentBlock=currentArrivalDeparture.getBlock();
-								}				
+								}
 								if(currentBlock!=null)
 									return new Indices(currentBlock, currentArrivalDeparture.getTripIndex(), found.getStopPathIndex(), 0);
 							}else
@@ -186,7 +189,7 @@ public abstract class PredictionGenerator {
 	/* TODO could also make it a requirement that it is on the same route as the one we are generating prediction for */
 	protected ArrivalDeparture findMatchInList(List<ArrivalDeparture> nextStopList,
 			ArrivalDeparture currentArrivalDeparture) {
-		for (ArrivalDeparture nextStopArrivalDeparture : nextStopList) {			
+		for (ArrivalDeparture nextStopArrivalDeparture : nextStopList) {
 			if (currentArrivalDeparture.getVehicleId() == nextStopArrivalDeparture.getVehicleId()
 					&& currentArrivalDeparture.getTripId() == nextStopArrivalDeparture.getTripId()
 					&&  currentArrivalDeparture.isDeparture() && nextStopArrivalDeparture.isArrival() ) {
@@ -240,7 +243,7 @@ public abstract class PredictionGenerator {
 		return null;
 	}
 
-	protected List<TravelTimeDetails> lastDaysTimes(TripDataHistoryCache cache, String tripId,String direction, int stopPathIndex, Date startDate,
+	protected List<TravelTimeDetails> lastDaysTimes(TripDataHistoryCacheInterface cache, String tripId,String direction, int stopPathIndex, Date startDate,
 			Integer startTime, int num_days_look_back, int num_days) {
 
 		List<TravelTimeDetails> times = new ArrayList<TravelTimeDetails>();
@@ -251,8 +254,8 @@ public abstract class PredictionGenerator {
 		 * which services use this trip and only 1ook on day service is
 		 * running
 		 */
-		
-		
+
+
 		for (int i = 0; i < num_days_look_back && num_found < num_days; i++) {
 
 			Date nearestDay = DateUtils.truncate(DateUtils.addDays(startDate, (i + 1) * -1), Calendar.DAY_OF_MONTH);
@@ -264,23 +267,23 @@ public abstract class PredictionGenerator {
 			if (results != null) {
 
 				ArrivalDeparture arrival = getArrival(stopPathIndex, results);
-				
+
 				if(arrival!=null)
-				{							
-					ArrivalDeparture departure = TripDataHistoryCache.findPreviousDepartureEvent(results, arrival);
-																							
+				{
+					ArrivalDeparture departure = TripDataHistoryCacheFactory.getInstance().findPreviousDepartureEvent(results, arrival);
+
 					if (arrival != null && departure != null) {
-						
+
 						TravelTimeDetails travelTimeDetails=new TravelTimeDetails(departure, arrival);
-						
+
 						times.add(travelTimeDetails);
-											
+
 						num_found++;
 					}
 				}
 			}
 		}
-		return times;		
+		return times;
 	}
 	ArrivalDeparture getArrival(int stopPathIndex, List<ArrivalDeparture> results)
 	{
@@ -291,24 +294,24 @@ public abstract class PredictionGenerator {
 				return result;
 			}
 		}
-		return null;	
+		return null;
 	}
 	protected long timeBetweenStops(ArrivalDeparture ad1, ArrivalDeparture ad2) {
-		
-		return Math.abs(ad2.getTime() - ad1.getTime());		
+
+		return Math.abs(ad2.getTime() - ad1.getTime());
 	}
 
 	protected static <T> Iterable<T> emptyIfNull(Iterable<T> iterable) {
 		return iterable == null ? Collections.<T> emptyList() : iterable;
 	}
-	
+
 	public long getHeadway(Indices indices, AvlReport avlReport, VehicleState vehicleState) throws Exception {
 		
 		// This is a WIP to get a predicted headway at the stop.
 		List<IpcPrediction> masterList=new ArrayList<IpcPrediction>();
-		
+
 		List<IpcPredictionsForRouteStopDest> predicitonsForRouteStopDest = PredictionDataCache.getInstance().getPredictions(vehicleState.getRouteId(), vehicleState.getTrip().getDirectionId(), indices.getTrip().getStopPath(indices.getStopPathIndex()).getStopId(), 5);
-				
+
 		for(IpcPredictionsForRouteStopDest predictions:predicitonsForRouteStopDest)
 		{
 			for( IpcPrediction prediction:predictions.getPredictionsForRouteStop())
@@ -316,6 +319,7 @@ public abstract class PredictionGenerator {
 				masterList.add(prediction);
 			}
 		}
+
 		// No such thing as headway if only one vehicle.
 		if(masterList.size()>1)
 		{
@@ -344,7 +348,6 @@ public abstract class PredictionGenerator {
 				}
 			}
 		}
-		return -1;	
-		
+		return -1;			
 	}
 }

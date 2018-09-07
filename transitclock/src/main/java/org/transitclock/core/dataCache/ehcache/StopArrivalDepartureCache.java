@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.transitclock.core.dataCache;
+package org.transitclock.core.dataCache.ehcache;
 
 import java.util.Collections;
 import java.util.Date;
@@ -20,8 +20,12 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.transitclock.config.IntegerConfigValue;
+import org.transitclock.core.dataCache.ArrivalDepartureComparator;
+import org.transitclock.core.dataCache.StopArrivalDepartureCacheFactory;
+import org.transitclock.core.dataCache.StopArrivalDepartureCacheInterface;
+import org.transitclock.core.dataCache.StopArrivalDepartureCacheKey;
+import org.transitclock.core.dataCache.TripKey;
 import org.transitclock.db.structs.ArrivalDeparture;
-import org.transitclock.gtfs.GtfsData;
 import org.transitclock.utils.Time;
 
 /**
@@ -33,8 +37,8 @@ import org.transitclock.utils.Time;
  *         TODO this could do with an interface, factory class, and alternative
  *         implementations, perhaps using Infinispan.
  */
-public class StopArrivalDepartureCache {
-	private static StopArrivalDepartureCache singleton = new StopArrivalDepartureCache();
+public class StopArrivalDepartureCache extends StopArrivalDepartureCacheInterface {
+
 
 	private static boolean debug = false;
 
@@ -48,19 +52,11 @@ public class StopArrivalDepartureCache {
 	 * Default is 4 as we need 3 days worth for Kalman Filter implementation
 	 */
 	private static final IntegerConfigValue tripDataCacheMaxAgeSec = new IntegerConfigValue(
-			"transitclock.tripdatacache.tripDataCacheMaxAgeSec", 4 * Time.SEC_PER_DAY,
+			"transitime.tripdatacache.tripDataCacheMaxAgeSec", 4 * Time.SEC_PER_DAY,
 			"How old an arrivaldeparture has to be before it is removed from the cache ");
 
-	/**
-	 * Gets the singleton instance of this class.
-	 * 
-	 * @return
-	 */
-	public static StopArrivalDepartureCache getInstance() {
-		return singleton;
-	}
 
-	private StopArrivalDepartureCache() {
+	public StopArrivalDepartureCache() {
 		CacheManager cm = CacheManager.getInstance();
 		EvictionAgePolicy evictionPolicy = null;
 		if (tripDataCacheMaxAgeSec != null) {
@@ -105,6 +101,10 @@ public class StopArrivalDepartureCache {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.transitime.core.dataCache.ehcache.StopArrivalDepartureCacheInterface#getStopHistory(org.transitime.core.dataCache.StopArrivalDepartureCacheKey)
+	 */
+	
 	@SuppressWarnings("unchecked")
 	synchronized public List<ArrivalDeparture> getStopHistory(StopArrivalDepartureCacheKey key) {
 
@@ -118,7 +118,7 @@ public class StopArrivalDepartureCache {
 		date.set(Calendar.MILLISECOND, 0);
 		key.setDate(date.getTime());
 		Element result = cache.get(key);
-
+		
 		if (result != null) {
 			return (List<ArrivalDeparture>) result.getObjectValue();
 		} else {
@@ -126,6 +126,10 @@ public class StopArrivalDepartureCache {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.transitime.core.dataCache.ehcache.StopArrivalDepartureCacheInterface#putArrivalDeparture(org.transitime.db.structs.ArrivalDeparture)
+	 */
+	
 	@SuppressWarnings("unchecked")
 	synchronized public StopArrivalDepartureCacheKey putArrivalDeparture(ArrivalDeparture arrivalDeparture) {
 
@@ -139,37 +143,31 @@ public class StopArrivalDepartureCache {
 		date.set(Calendar.SECOND, 0);
 		date.set(Calendar.MILLISECOND, 0);
 
-		if(arrivalDeparture.getStop()!=null)
-		{
-			StopArrivalDepartureCacheKey key = new StopArrivalDepartureCacheKey(arrivalDeparture.getStop().getId(),
-						date.getTime());
-			
-			List<ArrivalDeparture> list = null;
-	
-			Element result = cache.get(key);
-	
-			if (result != null && result.getObjectValue() != null) {
-				list = (List<ArrivalDeparture>) result.getObjectValue();
-				cache.remove(key);
-			} else {
-				list = new ArrayList<ArrivalDeparture>();
-			}
-			
-			list.add(arrivalDeparture);
-			
-			Collections.sort(list, new ArrivalDepartureComparator());
-			
-			// This is java 1.8 list.sort(new ArrivalDepartureComparator());
-			
-			Element arrivalDepartures = new Element(key, Collections.synchronizedList(list));
-	
-			cache.put(arrivalDepartures);
-	
-			return key;
-		}else
-		{
-			return null;
+		StopArrivalDepartureCacheKey key = new StopArrivalDepartureCacheKey(arrivalDeparture.getStop().getId(),
+				date.getTime());
+
+		List<ArrivalDeparture> list = null;
+
+		Element result = cache.get(key);
+
+		if (result != null && result.getObjectValue() != null) {
+			list = (List<ArrivalDeparture>) result.getObjectValue();
+			cache.remove(key);
+		} else {
+			list = new ArrayList<ArrivalDeparture>();
 		}
+		
+		list.add(arrivalDeparture);
+		
+		Collections.sort(list, new ArrivalDepartureComparator());
+		
+		// This is java 1.8 list.sort(new ArrivalDepartureComparator());
+		
+		Element arrivalDepartures = new Element(key, Collections.synchronizedList(list));
+
+		cache.put(arrivalDepartures);
+
+		return key;
 	}
 
 	private static <T> Iterable<T> emptyIfNull(Iterable<T> iterable) {
@@ -181,15 +179,9 @@ public class StopArrivalDepartureCache {
 
 		@SuppressWarnings("unchecked")
 		List<ArrivalDeparture> results = criteria.add(Restrictions.between("time", startDate, endDate)).list();
-		
-		
 
 		for (ArrivalDeparture result : results) {
-			// TODO this might be better done in the database.
-			if(GtfsData.routeNotFiltered(result.getRouteId()))
-			{
-				StopArrivalDepartureCache.getInstance().putArrivalDeparture(result);
-			}
+			StopArrivalDepartureCacheFactory.getInstance().putArrivalDeparture(result);
 		}
 	}
 
