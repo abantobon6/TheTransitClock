@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ page import="org.transitclock.utils.web.WebUtils" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -43,7 +43,7 @@
   <!--  Needed for google charts -->
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
   
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Schedule Adherence</title>
 </head>
 <body>
@@ -226,12 +226,11 @@
 	var routeName = routeData.routes[0].name;
 		
 	  <%
-	  String dateRange = request.getParameter("beginDate") + " (+" + request.getParameter("numDays") + " days)";
 	  String allowableEarly = request.getParameter("allowableEarly");;
 	  String allowableLate = request.getParameter("allowableLate");;
 	  String chartParams = 
 	    allowableEarly + " min early to " + allowableLate + " min late</br>" 
-		+ dateRange;
+		+ request.getParameter("dateRange");
 	  
 	  String beginTime = request.getParameter("beginTime");
 	  String endTime = request.getParameter("endTime");
@@ -265,9 +264,9 @@
 	    success: createDataTablesAndDrawCharts,
 	    // When there is an AJAX problem alert the user
 	    error: function(request, status, error) {
-	     	console.log(request.responseText)
-            var msg = $("<p>").html("<br>No data for requested parameters. Hit back button to try other parameters.")
-            $("#errorMessage").append(msg);
+	       //alert(error + '. ' + request.responseText);
+	     	$("#errorMessage").html(request.responseText +
+	     			"<br/><br/>Hit back button to try other parameters.");
 	        $("#errorMessage").fadeIn("fast");
 	        $("#loading").fadeOut("slow");
 	       },
