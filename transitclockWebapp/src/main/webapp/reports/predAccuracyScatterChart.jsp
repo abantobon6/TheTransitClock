@@ -109,9 +109,8 @@ if ((beginTime != null && !beginTime.isEmpty()) || (endTime != null && !endTime.
             globalDataTable = new google.visualization.DataTable(jsonData);
             },
           error: function(request, status, error) {
-        	console.log(request.responseText)
-            var msg = $("<p>").html("<br>No data for requested parameters. Hit back button to try other parameters.")
-            $("#errorMessage").append(msg);
+          	$("#errorMessage").html(request.responseText +
+			  "<br/><br/>Hit back button to try other parameters.")
 			$("#errorMessage").fadeIn("slow");
             },
           }).responseJSON;
