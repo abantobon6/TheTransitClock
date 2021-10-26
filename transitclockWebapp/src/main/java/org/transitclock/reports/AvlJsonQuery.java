@@ -18,6 +18,7 @@ package org.transitclock.reports;
 
 import java.text.ParseException;
 
+import org.transitclock.db.webstructs.WebAgency;
 import org.transitclock.utils.Time;
 
 /**
@@ -53,6 +54,7 @@ public class AvlJsonQuery {
 			String beginDate, String numdays, String beginTime, String endTime) {
 		//Determine the time portion of the SQL
 		String timeSql = "";
+		WebAgency agency = WebAgency.getCachedWebAgency(agencyId);
 		// If beginTime or endTime set but not both then use default values
 		if ((beginTime != null && !beginTime.isEmpty())
 				|| (endTime != null && !endTime.isEmpty())) {
@@ -63,17 +65,34 @@ public class AvlJsonQuery {
 		}
 		if (beginTime != null && !beginTime.isEmpty() 
 				&& endTime != null && !endTime.isEmpty()) {
-			timeSql = " AND time(time) BETWEEN '" 
-				+ beginTime + "' AND '" + endTime + "' ";
+			if ("mysql".equals(agency.getDbType())) {
+				timeSql = " AND time(time) BETWEEN '" 
+						+ beginTime + "' AND '" + endTime + "' ";
+			} else {
+				timeSql = " AND cast('2000-01-01 01:12:00'::timestamp as time) BETWEEN '" 
+						+ beginTime + "' AND '" + endTime + "' ";
+			}
 		}
-
-		String sql = "SELECT vehicleId, time, assignmentId, lat, lon, speed, "
+		
+		String sql = "";		
+		
+		if ("mysql".equals(agency.getDbType())) {
+			sql = "SELECT vehicleId, name, time, assignmentId, lat, lon, speed, "
 				+ "heading, timeProcessed, source "
 				+ "FROM avlreports "
-				+ "WHERE time BETWEEN " + " cast(? as timestamp)"
-				+ " AND " + "cast(? as timestamp)"  + " + INTERVAL '" + numdays + " day' "
+				+ "INNER JOIN vehicleconfigs ON vehicleconfigs.id = avlreports.vehicleId "
+				+ "WHERE time BETWEEN " + " cast(? as datetime)"
+				+ " AND " + "date_add(cast(? as datetime), INTERVAL " + numdays + " day) "
 				+ timeSql;
-
+		} else {
+			sql = "SELECT vehicleId, name, time, assignmentId, lat, lon, speed, "
+					+ "heading, timeProcessed, source "
+					+ "FROM avlreports "
+					+ "INNER JOIN vehicleconfigs ON vehicleconfigs.id = avlreports.vehicleId "
+					+ "WHERE time BETWEEN " + " cast(? as timestamp)"
+					+ " AND " + "cast(? as timestamp)"  + " + INTERVAL '" + numdays + " day' "
+					+ timeSql;
+		}
 
 		// If only want data for single vehicle then specify so in SQL
 		if (vehicleId != null && !vehicleId.isEmpty())
@@ -86,6 +105,7 @@ public class AvlJsonQuery {
 		// to view too much data at once.
 
 		sql += "ORDER BY vehicleId, time LIMIT " + MAX_ROWS;
+		
 		String json=null;
 		try {
 			java.util.Date startdate = Time.parseDate(beginDate);						
