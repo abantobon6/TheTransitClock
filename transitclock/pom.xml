@@ -92,6 +92,11 @@
 			<artifactId>esri-geometry-api</artifactId>
 			<version>1.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.bmw-carit</groupId>
+			<artifactId>barefoot</artifactId>
+			<version>0.1.5</version>
+		</dependency>
 
 
 		<!-- Database related, including c3p0 production quality connector. Note: 
