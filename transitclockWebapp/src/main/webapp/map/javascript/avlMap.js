@@ -198,7 +198,7 @@ function createExport(vehicles) {
 //when selections change without having to redraw tiles.
 var map = L.map('map');
 L.control.scale({metric: false}).addTo(map);
-var mapTileUrl = '<%= WebConfigParams.getMapTileUrl() %>'; 
+var mapTileUrl = 'http://tile.openstreetmap.org/{z}/{x}/{y}.png'; 
 L.tileLayer(mapTileUrl, {
  attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> &amp; <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
  maxZoom: 19
