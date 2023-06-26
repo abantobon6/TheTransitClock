@@ -68,7 +68,7 @@ public class SpatialMatcher {
 	private SpatialMatch smallestDistanceSpatialMatch = null;
 
 	// For keeping track of what kind of spatial matching being done
-	public enum MatchingType {STANDARD_MATCHING, AUTO_ASSIGNING_MATCHING};
+	public enum MatchingType {STANDARD_MATCHING, AUTO_ASSIGNING_MATCHING, BAREFOOT_MATCHING};
 	
 	private static final Logger logger = 
 			LoggerFactory.getLogger(SpatialMatcher.class);
@@ -732,6 +732,9 @@ public class SpatialMatcher {
 	 */
 	public static List<SpatialMatch>
 			getSpatialMatches(VehicleState vehicleState) {
+		
+		vehicleState.getMapMatchedLocation();		
+						
 		// Some convenience variables
 		TemporalMatch previousMatch = vehicleState.getMatch();
 		SpatialMatcher spatialMatcher = new SpatialMatcher();
