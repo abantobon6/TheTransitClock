@@ -61,8 +61,8 @@ public class TransitClockRoadReader implements RoadReader {
 		polyLine.addSegment(polyLineSegment, false);
 		
 		logger.debug("Adding segment -->" +startPoint.toString() + " : "+endPoint.toString());
-					
-		return new BaseRoad(indices.hashCode(), segmentCounter, segmentCounter++, indices.hashCode(), true, (short) 1, 1F, 60F, 60F, 100F,
+									
+		return new BaseRoad(indices.hashCode(), segmentCounter, segmentCounter++, indices.getStopPathIndex(), true, (short) 1, 1F, 60F, 60F, 100F,
 				polyLine);
 	
 	}

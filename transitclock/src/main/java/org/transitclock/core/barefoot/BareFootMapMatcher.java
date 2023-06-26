@@ -68,21 +68,15 @@ public class BareFootMapMatcher implements MapMatcher {
 			barefootState.update(result, sample);
 
 			MatcherCandidate estimate = barefootState.estimate();
-
+			
 			if (estimate != null) {
-				
-				estimate.point().edge().base().id(); // road id
-				estimate.point().edge().heading(); // heading
-				estimate.point().geometry(); // GPS position (on the road)
-				if (estimate.transition() != null)
-					estimate.transition().route().geometry(); // path geometry from last matching
-																// candidate
+						
 				Location location = new Location(estimate.point().geometry().getY(),
 						estimate.point().geometry().getX());
 
 				if (!location.equals(avlReport.getLocation())) {
 					
-					logger.debug("Vehicle {} assigned to {} is {} metres from GPS coordindates.", avlReport.getVehicleId(),avlReport.getAssignmentId(),Geo.distance(location, avlReport.getLocation()));
+					logger.debug("Vehicle {} assigned to {} is {} metres from GPS coordindates on stoppath {}. Proability is {}.", avlReport.getVehicleId(),avlReport.getAssignmentId(),Geo.distance(location, avlReport.getLocation()), estimate.point().edge().base().refid(),estimate.seqprob());
 				}
 				return location;
 			}
