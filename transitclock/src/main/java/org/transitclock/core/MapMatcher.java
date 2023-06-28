@@ -7,6 +7,6 @@ import org.transitclock.db.structs.Block;
 import org.transitclock.db.structs.Location;
 
 public interface MapMatcher {
-	void setMatcher(Block block,  Date assignmentTime);
-	Location getEstimateLocation(AvlReport avlReport);
+	void setMatcher(Block block,  Date assignmentTime);	
+	SpatialMatch getSpatialMatch(AvlReport avlReport);
 }

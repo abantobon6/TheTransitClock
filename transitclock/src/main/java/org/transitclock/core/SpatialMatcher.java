@@ -732,9 +732,7 @@ public class SpatialMatcher {
 	 */
 	public static List<SpatialMatch>
 			getSpatialMatches(VehicleState vehicleState) {
-		
-		vehicleState.getMapMatchedLocation();		
-						
+										
 		// Some convenience variables
 		TemporalMatch previousMatch = vehicleState.getMatch();
 		SpatialMatcher spatialMatcher = new SpatialMatcher();

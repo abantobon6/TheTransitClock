@@ -5,7 +5,9 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.transitclock.configData.CoreConfig;
 import org.transitclock.core.MapMatcher;
+import org.transitclock.core.SpatialMatch;
 import org.transitclock.db.structs.AvlReport;
 import org.transitclock.db.structs.Block;
 import org.transitclock.db.structs.Location;
@@ -19,6 +21,7 @@ import com.bmwcarit.barefoot.roadmap.RoadMap;
 import com.bmwcarit.barefoot.roadmap.RoadPoint;
 import com.bmwcarit.barefoot.roadmap.TimePriority;
 import com.bmwcarit.barefoot.spatial.Geography;
+import com.bmwcarit.barefoot.spatial.SpatialOperator;
 import com.bmwcarit.barefoot.topology.Dijkstra;
 import com.esri.core.geometry.Point;
 import org.transitclock.utils.Geo;
@@ -31,6 +34,12 @@ public class BareFootMapMatcher implements MapMatcher {
 
 	private MatcherKState barefootState = null;
 
+	private Block block = null;
+
+	private int tripIndex = -1;
+
+	private static SpatialOperator spatial = new Geography();
+
 	private static final Logger logger = LoggerFactory.getLogger(BareFootMapMatcher.class);
 
 	@Override
@@ -38,7 +47,9 @@ public class BareFootMapMatcher implements MapMatcher {
 
 		if (block != null) {
 
-			int tripIndex = block.activeTripIndex(assignmentTime, 0);
+			this.block = block;
+
+			tripIndex = block.activeTripIndex(assignmentTime, 0);
 
 			TransitClockRoadReader roadReader = new TransitClockRoadReader(block, tripIndex);
 
@@ -49,12 +60,14 @@ public class BareFootMapMatcher implements MapMatcher {
 			barefootMatcher = new Matcher(barefootMap, new Dijkstra<Road, RoadPoint>(), new TimePriority(),
 					new Geography());
 
+			barefootMatcher.shortenTurns(false);
+
 			barefootState = new MatcherKState();
 		}
 	}
 
 	@Override
-	public Location getEstimateLocation(AvlReport avlReport) {
+	public SpatialMatch getSpatialMatch(AvlReport avlReport) {
 
 		if (barefootState != null) {
 			Point point = new Point();
@@ -68,19 +81,27 @@ public class BareFootMapMatcher implements MapMatcher {
 			barefootState.update(result, sample);
 
 			MatcherCandidate estimate = barefootState.estimate();
-			
+
+			logger.debug("Vehicle {} has {} samples.", avlReport.getVehicleId(), barefootState.samples().size());
+
 			if (estimate != null) {
-						
+
 				Location location = new Location(estimate.point().geometry().getY(),
 						estimate.point().geometry().getX());
 
-				if (!location.equals(avlReport.getLocation())) {
-					
-					logger.debug("Vehicle {} assigned to {} is {} metres from GPS coordindates on stoppath {}. Proability is {}.", avlReport.getVehicleId(),avlReport.getAssignmentId(),Geo.distance(location, avlReport.getLocation()), estimate.point().edge().base().refid(),estimate.seqprob());
-				}
-				return location;
-			}
+				ReferenceId refId = ReferenceId.deconstructRefId(estimate.point().edge().base().refid());
 
+				logger.debug(
+						"Vehicle {} assigned to {} is {} metres from GPS coordindates on {}. Probability is {} and Sequence probabilty is {}.",
+						avlReport.getVehicleId(), avlReport.getAssignmentId(),
+						Geo.distance(location, avlReport.getLocation()), refId, estimate.filtprob(),
+						estimate.seqprob());
+
+				return new SpatialMatch(avlReport.getTime(), block, tripIndex, refId.getStopPathIndex(),
+						refId.getSegmentIndex(), 0, spatial.intercept(estimate.point().edge().geometry(), point)
+								* spatial.length(estimate.point().edge().geometry()));
+
+			}
 		}
 		return null;
 	}

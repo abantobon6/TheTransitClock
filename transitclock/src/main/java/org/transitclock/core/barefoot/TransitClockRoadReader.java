@@ -5,6 +5,7 @@ import java.util.HashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.transitclock.applications.Core;
+import org.transitclock.configData.CoreConfig;
 import org.transitclock.core.Indices;
 import org.transitclock.db.structs.Block;
 import org.transitclock.db.structs.Trip;
@@ -12,6 +13,8 @@ import org.transitclock.db.structs.VectorWithHeading;
 
 import com.bmwcarit.barefoot.road.BaseRoad;
 import com.bmwcarit.barefoot.road.RoadReader;
+import com.bmwcarit.barefoot.spatial.Geography;
+import com.bmwcarit.barefoot.spatial.SpatialOperator;
 import com.bmwcarit.barefoot.util.SourceException;
 import com.esri.core.geometry.Line;
 import com.esri.core.geometry.Point;
@@ -28,6 +31,8 @@ public class TransitClockRoadReader implements RoadReader {
 	long segmentCounter = 0;
 	private static final Logger logger =
 			LoggerFactory.getLogger(TransitClockRoadReader.class);
+	
+	private static SpatialOperator spatial = new Geography();
 	
 	public TransitClockRoadReader(Block block, int tripIndex) {
 
@@ -59,12 +64,11 @@ public class TransitClockRoadReader implements RoadReader {
 		polyLineSegment.setEnd(endPoint);
 				
 		polyLine.addSegment(polyLineSegment, false);
-		
-		logger.debug("Adding segment -->" +startPoint.toString() + " : "+endPoint.toString());
-									
-		return new BaseRoad(indices.hashCode(), segmentCounter, segmentCounter++, indices.getStopPathIndex(), true, (short) 1, 1F, 60F, 60F, 100F,
-				polyLine);
-	
+				
+		ReferenceId refId=new ReferenceId(indices.getStopPathIndex(),indices.getSegmentIndex()); 
+																
+		return new BaseRoad(indices.hashCode(), segmentCounter, segmentCounter++, refId.getRefId(), true, (short) 1, 1F, 60F, 60F, (float)spatial.length(polyLine),
+				polyLine);	
 	}
 
 

@@ -444,9 +444,13 @@ public class AvlProcessor {
 		// Find possible spatial matches
 		List<SpatialMatch> spatialMatches = SpatialMatcher
 				.getSpatialMatches(vehicleState);
+		
+		// This will augment the results of the original spatial matcher with the match from barefoot
+		spatialMatches.add(vehicleState.getMapMatchedSpatialMatch());
+						
 		logger.debug("For vehicleId={} found the following {} spatial "
-				+ "matches: {}", vehicleState.getVehicleId(),
-				spatialMatches.size(), spatialMatches);
+				+ "matches: {} ", vehicleState.getVehicleId(),
+				spatialMatches.size(), spatialMatches);				
 
 		// Find best temporal match of the spatial matches
 		TemporalMatch bestTemporalMatch = TemporalMatcher.getInstance()

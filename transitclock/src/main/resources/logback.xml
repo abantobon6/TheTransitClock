@@ -326,7 +326,7 @@
 		</rollingPolicy>
 		<encoder>
 			<charset>UTF-8</charset>
-			<pattern>${DEFAULT_PATTERN}</pattern>
+			<pattern>${DATA_PATTERN}</pattern>
 		</encoder>
 	</appender>
 
@@ -484,7 +484,7 @@
 		<appender-ref ref="MATCH" />
 	</logger>
 
-	<logger name="org.transitclock.avl" level="info" additivity="false">
+	<logger name="org.transitclock.avl" level="debug" additivity="false">
 		<appender-ref ref="AVL" />
 	</logger>
 
@@ -591,6 +591,10 @@
 
 	<logger name="org.transitclock.core.barefoot.TransitClockRoadReader" 
 		level="info" additivity="true"> 
+		<appender-ref ref="BAREFOOT" /> 
+	</logger>
+	<logger name="org.transitclock.core.AvlProcessor" 
+		level="debug" additivity="true"> 
 		<appender-ref ref="BAREFOOT" /> 
 	</logger>
 	<logger name="org.transitclock.core.barefoot.BareFootMapMatcher" 

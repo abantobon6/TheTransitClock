@@ -172,13 +172,14 @@ public class VehicleState {
 		
 	}
 	
-	public Location getMapMatchedLocation()
+	public SpatialMatch getMapMatchedSpatialMatch()
 	{
 		if(mapMatcher!=null)
-			return mapMatcher.getEstimateLocation(getAvlReport());
+			return mapMatcher.getSpatialMatch(getAvlReport());
 		else
 			return null;
 	}
+	 
 
 	
 	/**
