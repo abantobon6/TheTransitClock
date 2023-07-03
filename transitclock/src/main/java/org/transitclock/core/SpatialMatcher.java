@@ -68,7 +68,7 @@ public class SpatialMatcher {
 	private SpatialMatch smallestDistanceSpatialMatch = null;
 
 	// For keeping track of what kind of spatial matching being done
-	public enum MatchingType {STANDARD_MATCHING, AUTO_ASSIGNING_MATCHING};
+	public enum MatchingType {STANDARD_MATCHING, AUTO_ASSIGNING_MATCHING, BAREFOOT_MATCHING};
 	
 	private static final Logger logger = 
 			LoggerFactory.getLogger(SpatialMatcher.class);
@@ -618,7 +618,8 @@ public class SpatialMatcher {
 				potentialMatchIndices.getStopPathIndex(),
 				potentialMatchIndices.getSegmentIndex(), 
 				distanceToSegment,
-				distanceAlongSegment);
+				distanceAlongSegment,
+				SpatialMatch.MatchType.TRANSITCLOCK);
 		logger.debug("For vehicleId={} examining match to see if it should " +
 				"be included in list of spatial matches. {}", 
 				avlReport.getVehicleId(), spatialMatch);
@@ -732,6 +733,7 @@ public class SpatialMatcher {
 	 */
 	public static List<SpatialMatch>
 			getSpatialMatches(VehicleState vehicleState) {
+										
 		// Some convenience variables
 		TemporalMatch previousMatch = vehicleState.getMatch();
 		SpatialMatcher spatialMatcher = new SpatialMatcher();
@@ -855,7 +857,8 @@ public class SpatialMatcher {
 					indexOfLastStopPath,
 					indexOfLastSegment, 
 					Double.NaN, // distanceToSegment set to a non-valid value
-					segmentLength);
+					segmentLength,
+					SpatialMatch.MatchType.TRANSITCLOCK);
 
 			// Add that match to list of possible SpatialMatches
 			logger.debug("Because vehicleId={} within specified distance " +

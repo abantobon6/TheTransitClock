@@ -23,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.transitclock.configData.CoreConfig;
@@ -66,6 +65,9 @@ public class VehicleState {
 	// First is most recent
 	private LinkedList<AvlReport> avlReportHistory =
 			new LinkedList<AvlReport>();
+	
+	
+
 	private List<IpcPrediction> predictions;
 	private TemporalDifference realTimeSchedAdh;
 
@@ -100,7 +102,8 @@ public class VehicleState {
 	private HoldingTime holdingTime=null;
 	//Used for schedPred AVL. Identify if trip is canceled.
 	private boolean isCanceled;
-
+	
+	MapMatcher mapMatcher = null;
 
 	public Headway getHeadway() {
 		return headway;
@@ -108,8 +111,6 @@ public class VehicleState {
 	public void setHeadway(Headway headway) {
 		this.headway = headway;
 	}
-
-
 
 	public HoldingTime getHoldingTime() {
 		return holdingTime;
@@ -131,8 +132,9 @@ public class VehicleState {
 
 	public VehicleState(String vehicleId) {
 		this.vehicleId = vehicleId;
+	
 	}
-
+	
 	/**
 	 * Sets the block assignment for vehicle. Also, this is how it is specified
 	 * whether a vehicle is predictable or not.
@@ -163,9 +165,23 @@ public class VehicleState {
 		this.assignmentMethod = assignmentMethod;
 		this.assignmentId = assignmentId;
 		this.predictable = predictable;
-		this.assignmentTime = getAvlReport().getDate();
+		this.assignmentTime = getAvlReport().getDate();		
+		
+		this.mapMatcher=(MapMatcher) MapMatcherFactory.getInstance();
+		mapMatcher.setMatcher(block, assignmentTime);		
+		
 	}
+	
+	public SpatialMatch getMapMatchedSpatialMatch()
+	{
+		if(mapMatcher!=null)
+			return mapMatcher.getSpatialMatch(getAvlReport());
+		else
+			return null;
+	}
+	 
 
+	
 	/**
 	 * Sets the block for this VehicleState to null. Also sets assignmentId
 	 * to null and predictable to false.
