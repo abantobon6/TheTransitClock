@@ -440,13 +440,16 @@ public class AvlProcessor {
 		logger.debug("STARTOFMATCHING");
 		logger.debug("Matching already predictable vehicle using new AVL "
 				+ "report. The old spatial match is {}", vehicleState);
+		
+		List<SpatialMatch> spatialMatches = new ArrayList<>();
 
 		// Find possible spatial matches
-		List<SpatialMatch> spatialMatches = SpatialMatcher
-				.getSpatialMatches(vehicleState);
+		if(CoreConfig.useDefaultSpatialMatcher.getValue())		
+			spatialMatches.addAll(SpatialMatcher
+				.getSpatialMatches(vehicleState));
 		
-		// This will augment the results of the original spatial matcher with the match from barefoot
-		spatialMatches.add(vehicleState.getMapMatchedSpatialMatch());
+		if(CoreConfig.useBarefootSpatialMatcher.getValue())			
+			spatialMatches.add(vehicleState.getMapMatchedSpatialMatch());					
 						
 		logger.debug("For vehicleId={} found the following {} spatial "
 				+ "matches: {} ", vehicleState.getVehicleId(),
@@ -828,7 +831,7 @@ public class AvlProcessor {
 						block, block.getTripIndex(trip), 0, // stopPathIndex
 						0, // segmentIndex
 						distanceToSegment,
-						0.0); // distanceAlongSegment
+						0.0,SpatialMatch.MatchType.TRANSITCLOCK); // distanceAlongSegment
 
 				bestMatch = new TemporalMatch(beginningOfTrip,
 						new TemporalDifference(0));

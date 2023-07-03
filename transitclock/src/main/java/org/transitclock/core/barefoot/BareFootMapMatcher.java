@@ -25,6 +25,7 @@ import com.bmwcarit.barefoot.spatial.SpatialOperator;
 import com.bmwcarit.barefoot.topology.Dijkstra;
 import com.esri.core.geometry.Point;
 import org.transitclock.utils.Geo;
+import org.transitclock.core.SpatialMatch;
 
 public class BareFootMapMatcher implements MapMatcher {
 
@@ -60,7 +61,7 @@ public class BareFootMapMatcher implements MapMatcher {
 			barefootMatcher = new Matcher(barefootMap, new Dijkstra<Road, RoadPoint>(), new TimePriority(),
 					new Geography());
 
-			barefootMatcher.shortenTurns(false);
+			barefootMatcher.shortenTurns(false);						
 
 			barefootState = new MatcherKState();
 		}
@@ -96,10 +97,10 @@ public class BareFootMapMatcher implements MapMatcher {
 						avlReport.getVehicleId(), avlReport.getAssignmentId(),
 						Geo.distance(location, avlReport.getLocation()), refId, estimate.filtprob(),
 						estimate.seqprob());
-
+				
 				return new SpatialMatch(avlReport.getTime(), block, tripIndex, refId.getStopPathIndex(),
 						refId.getSegmentIndex(), 0, spatial.intercept(estimate.point().edge().geometry(), point)
-								* spatial.length(estimate.point().edge().geometry()));
+								* spatial.length(estimate.point().edge().geometry()), SpatialMatch.MatchType.BAREFOOT);
 
 			}
 		}

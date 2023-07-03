@@ -618,7 +618,8 @@ public class SpatialMatcher {
 				potentialMatchIndices.getStopPathIndex(),
 				potentialMatchIndices.getSegmentIndex(), 
 				distanceToSegment,
-				distanceAlongSegment);
+				distanceAlongSegment,
+				SpatialMatch.MatchType.TRANSITCLOCK);
 		logger.debug("For vehicleId={} examining match to see if it should " +
 				"be included in list of spatial matches. {}", 
 				avlReport.getVehicleId(), spatialMatch);
@@ -856,7 +857,8 @@ public class SpatialMatcher {
 					indexOfLastStopPath,
 					indexOfLastSegment, 
 					Double.NaN, // distanceToSegment set to a non-valid value
-					segmentLength);
+					segmentLength,
+					SpatialMatch.MatchType.TRANSITCLOCK);
 
 			// Add that match to list of possible SpatialMatches
 			logger.debug("Because vehicleId={} within specified distance " +
